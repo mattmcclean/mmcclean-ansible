@@ -3,26 +3,39 @@
 - name: Copy tomcat server.xml file
   copy: src=server.xml dest=/usr/local/tomcat/conf/server.xml owner=root group=root mode=0644
   notify: restart tomcat
+  tags: exhibitor
 
 - name: Install OpenJDK for jps binary (apt version)
   apt: pkg=openjdk-6-jdk state=latest
-  when: ansible_distribution == 'Amazon'
+  when: ansible_distribution == 'Ubuntu'
+  tags: exhibitor
 
 - name: Set permissions of Tomcat home dir
   file: path=/var/lib/tomcat7 owner={{ tomcat_user }} group={{ tomcat_user }}
+  tags: exhibitor
+
+- name: Set permissions of Zookeeper conf dir
+  file: path=/usr/lib/zookeeper/conf owner={{ tomcat_user }} group={{ tomcat_user }} recurse=yes mode=0755
+  tags: exhibitor
 
 - name: Remove default root webapp
   file: path=/usr/local/tomcat/webapps/ROOT state=absent
+  tags: exhibitor
   
 - name: Create Exhibitor Home at /usr/share/tomcat7/.asgard
   file: path=/usr/share/tomcat7/.exhibitor state=directory owner={{ tomcat_user }}  group={{ tomcat_user }}  mode=0755
+  tags: exhibitor
 
 - name: Copy local Exhibitor WAR file {{ local_war }}
   copy: src={{ local_war }} dest=/usr/local/tomcat/webapps/exhibitor.war
   when: local_war != ""
-  tags: deploy
+  tags: 
+    - deploy
+    - exhibitor
   
 - name: Download snapshot build of Exhibitor
   get_url: url={{ latest_successful_build_url }} dest=/usr/local/tomcat/webapps/exhibitor.war
   when: local_war == ""
-  tags: deploy
+  tags: 
+    - deploy
+    - exhibitor
