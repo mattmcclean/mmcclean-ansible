@@ -1,0 +1,17 @@
+
+---
+# Zookeeper/Exhibitor playbook for ubuntu
+- name: Zookeeper
+  user: ubuntu
+  sudo: True
+  tags: zookeeper
+  hosts: all
+  roles:
+    - base
+    - tomcat
+    - zookeeper
+    - exhibitor
+  vars:
+    local_war: ""
+  vars_files:
+    - vars/{{ ansible_distribution }}.yml

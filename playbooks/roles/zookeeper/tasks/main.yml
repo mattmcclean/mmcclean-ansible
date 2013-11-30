@@ -1,0 +1,21 @@
+---
+# Zookeeper
+- name: Install Zookeeper (apt version)
+  apt: pkg=zookeeper-server state=latest
+  when: ansible_distribution == 'Ubuntu'
+  tags: zookeeper
+
+- name: Install Zookeeper (yum version)
+  yum: pkg=zookeeper-server state=latest
+  when: ansible_distribution == 'Amazon'
+  tags: zookeeper
+
+- name: Starting Zookeeper service
+  service: name=zookeeer-server state=started
+  when: not_ami_build
+  tags: zookeeper
+
+- name: Stopping Zookeeper service
+  service: name=zookeeper-server state=started
+  when: ami_build
+  tags: zookeeper
