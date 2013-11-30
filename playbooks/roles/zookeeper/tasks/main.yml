@@ -1,5 +1,29 @@
 ---
 # Zookeeper
+- name: Install Zookeeper Cloudera (CDH4) Bin Repository (apt version)
+  apt_repository: repo='deb [arch=amd64] http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh precise-cdh4 contrib' state=present
+  when: ansible_distribution == 'Ubuntu'
+  tags: zookeeper
+
+- name: Install Zookeeper Cloudera (CDH4) Src Repository (apt version)
+  apt_repository: repo='deb-src http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh precise-cdh4 contrib' state=present
+  when: ansible_distribution == 'Ubuntu'
+  tags: zookeeper
+
+- name: Add signing key for Cloudera (CDH4) Repository (apt version)
+  apt_key: url='http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh/archive.key' state=present
+  when: ansible_distribution == 'Ubuntu'
+  tags: zookeeper
+
+- name: Update APT repo
+  apt: update-cache=yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Install Zookeeper Cloudera (CDH4) Repository (yum version)
+  yum: pkg=zookeeper-server state=latest
+  when: ansible_distribution == 'Amazon'
+  tags: zookeeper
+
 - name: Install Zookeeper (apt version)
   apt: pkg=zookeeper-server state=latest
   when: ansible_distribution == 'Ubuntu'
@@ -10,12 +34,16 @@
   when: ansible_distribution == 'Amazon'
   tags: zookeeper
 
+- name: Initialise the Zookeeper service
+  shell: service zookeeper-server init
+  tags: zookeeper
+
 - name: Starting Zookeeper service
-  service: name=zookeeer-server state=started
+  service: name=zookeeper-server state=started
   when: not_ami_build
   tags: zookeeper
 
 - name: Stopping Zookeeper service
-  service: name=zookeeper-server state=started
+  service: name=zookeeper-server state=stopped
   when: ami_build
   tags: zookeeper

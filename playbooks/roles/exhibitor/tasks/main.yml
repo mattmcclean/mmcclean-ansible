@@ -4,6 +4,13 @@
   copy: src=server.xml dest=/usr/local/tomcat/conf/server.xml owner=root group=root mode=0644
   notify: restart tomcat
 
+- name: Install OpenJDK for jps binary (apt version)
+  apt: pkg=openjdk-6-jdk state=latest
+  when: ansible_distribution == 'Amazon'
+
+- name: Set permissions of Tomcat home dir
+  file: path=/var/lib/tomcat7 owner={{ tomcat_user }} group={{ tomcat_user }}
+
 - name: Remove default root webapp
   file: path=/usr/local/tomcat/webapps/ROOT state=absent
   
