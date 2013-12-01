@@ -1,0 +1,5 @@
+---
+# Installs the Nerve client
+- name: Installs the Nerve client
+  gem: name=nerve state=latest
+  tags: smartstack

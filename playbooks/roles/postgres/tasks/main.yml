@@ -1,0 +1,16 @@
+---
+# Postgres Server install
+- name: Install Postgres database (apt version)
+  apt: pkg=postgres state=latest
+  when: ansible_distribution == 'Ubuntu'
+  tags: database
+
+- name: Starting Postgres service
+  service: name=postgres state=started
+  when: not_ami_build
+  tags: database
+
+- name: Stopping Postgres service
+  service: name:postgres state=stopped
+  when: ami_build
+  tags: database

@@ -1,0 +1,6 @@
+---
+# Installs the Synapse client
+- name: Install the Synapse client
+  gem: name=synapse state=latest
+  tags: smartstack
+
